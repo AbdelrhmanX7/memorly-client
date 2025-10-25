@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@config "../tailwind.config.js";
+
+/* Swiper custom styles */
+.features-swiper {
+  padding: 40px 0 60px 0;
+}
+
+.features-swiper .swiper-pagination-bullet {
+  background: hsl(var(--heroui-primary));
+  opacity: 0.5;
+  width: 10px;
+  height: 10px;
+  transition: all 0.3s ease;
+}
+
+.features-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Glow pulse animations for each color */
+@keyframes glow-pulse-primary {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px hsl(var(--heroui-primary)))
+      drop-shadow(0 0 16px hsl(var(--heroui-primary)));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px hsl(var(--heroui-primary)))
+      drop-shadow(0 0 40px hsl(var(--heroui-primary)));
+  }
+}
+
+@keyframes glow-pulse-secondary {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px hsl(var(--heroui-secondary)))
+      drop-shadow(0 0 16px hsl(var(--heroui-secondary)));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px hsl(var(--heroui-secondary)))
+      drop-shadow(0 0 40px hsl(var(--heroui-secondary)));
+  }
+}
+
+@keyframes glow-pulse-warning {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px hsl(var(--heroui-warning)))
+      drop-shadow(0 0 16px hsl(var(--heroui-warning)));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px hsl(var(--heroui-warning)))
+      drop-shadow(0 0 40px hsl(var(--heroui-warning)));
+  }
+}
+
+@keyframes glow-pulse-success {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px hsl(var(--heroui-success)))
+      drop-shadow(0 0 16px hsl(var(--heroui-success)));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px hsl(var(--heroui-success)))
+      drop-shadow(0 0 40px hsl(var(--heroui-success)));
+  }
+}
+
+.icon-glow-primary {
+  animation: glow-pulse-primary 2s ease-in-out infinite;
+}
+
+.icon-glow-secondary {
+  animation: glow-pulse-secondary 2s ease-in-out infinite;
+}
+
+.icon-glow-warning {
+  animation: glow-pulse-warning 2s ease-in-out infinite;
+}
+
+.icon-glow-success {
+  animation: glow-pulse-success 2s ease-in-out infinite;
+}
+
+/* Grid Background */
+.grid-background {
+  background-image: linear-gradient(
+      to right,
+      hsl(var(--heroui-foreground) / 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      hsl(var(--heroui-foreground) / 0.05) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+  mask-image: radial-gradient(
+    ellipse 80% 50% at 50% 50%,
+    #000 40%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 50% at 50% 50%,
+    #000 40%,
+    transparent 100%
+  );
+}
+
+/* Dark theme grid background */
+:is(.dark .grid-background) {
+  background-image: linear-gradient(
+      to right,
+      hsl(var(--heroui-foreground) / 0.08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      hsl(var(--heroui-foreground) / 0.08) 1px,
+      transparent 1px
+    );
+}

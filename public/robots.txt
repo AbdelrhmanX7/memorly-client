@@ -1,0 +1,25 @@
+# *
+User-agent: *
+Allow: /
+
+# Disallow authentication pages
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+
+# Disallow user-specific pages
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /settings
+Disallow: /memories
+Disallow: /collections
+Disallow: /timeline
+
+# Disallow API routes
+Disallow: /api/
+
+# Host
+Host: https://memorly.app
+
+# Sitemap
+Sitemap: https://memorly.app/sitemap.xml
