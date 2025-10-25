@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  EyeSlashIcon,
+  ArrowRightStartOnRectangleIcon,
+} from "@heroicons/react/24/outline";
 import NextHead from "next/head";
+import { useRouter } from "next/router";
+import { addToast } from "@heroui/react";
 
 import { useLogin } from "@/service/hooks/useAuth";
 import { LoginFormData } from "@/types/auth";
 import { siteConfig } from "@/config/site";
 
 export default function LoginPage() {
-  const { mutate: login, isPending, isError, error } = useLogin();
+  const router = useRouter();
+  const { verified, reset } = router.query;
+  const { mutate: login, isPending, isError, error, isSuccess } = useLogin();
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
@@ -62,6 +69,60 @@ export default function LoginPage() {
     }
   };
 
+  // Toast notifications
+  useEffect(() => {
+    if (isPending) {
+      addToast({
+        description: "Signing you in...",
+        variant: "bordered",
+        color: "secondary",
+      });
+    }
+  }, [isPending]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      addToast({
+        description: "Welcome back! Redirecting to your dashboard...",
+        variant: "bordered",
+        color: "success",
+        timeout: 3000,
+      });
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError && error) {
+      addToast({
+        description:
+          error.message || "Login failed. Please check your credentials.",
+        variant: "bordered",
+        color: "danger",
+        timeout: 4000,
+      });
+    }
+  }, [isError, error]);
+
+  useEffect(() => {
+    if (verified === "true") {
+      addToast({
+        description:
+          "Email verified successfully! You can now sign in to your account.",
+        variant: "bordered",
+        color: "success",
+        timeout: 4000,
+      });
+    } else if (reset === "true") {
+      addToast({
+        description:
+          "Password reset successfully! Please sign in with your new password.",
+        variant: "bordered",
+        color: "success",
+        timeout: 4000,
+      });
+    }
+  }, [verified, reset]);
+
   const pageTitle = "Sign In";
   const pageDescription =
     "Sign in to your Memorly account and access your precious memories. Secure login to your AI-powered memory companion.";
@@ -92,89 +153,89 @@ export default function LoginPage() {
         <meta content={pageDescription} name="twitter:description" />
       </NextHead>
 
-      <div>
-        <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-          <Card className="w-full max-w-md">
-            <CardHeader className="flex flex-col gap-1 px-6 pt-6">
-              <h1 className="text-2xl font-bold">Welcome Back</h1>
-              <p className="text-small text-default-500">
-                Sign in to your Memorly account
-              </p>
-            </CardHeader>
-            <CardBody className="gap-4 px-6 pb-6">
-              <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                {isError && (
-                  <div className="rounded-medium bg-danger-50 p-3 text-small text-danger">
-                    {error?.message ||
-                      "Login failed. Please check your credentials."}
-                  </div>
-                )}
+      <section className="relative flex h-full items-center justify-center overflow-hidden py-12 px-4">
+        {/* Grid Background */}
+        <div className="absolute inset-0 grid-background pointer-events-none" />
 
-                <Input
-                  autoComplete="email"
-                  errorMessage={validationErrors.email}
-                  isInvalid={!!validationErrors.email}
-                  label="Email"
-                  placeholder="Enter your email"
-                  type="email"
-                  value={formData.email}
-                  variant="bordered"
-                  onChange={(e) => handleChange("email", e.target.value)}
-                />
+        <div className="relative z-10 w-full max-w-md">
+          <div className="mb-8 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="rounded-full bg-primary/10 p-4">
+                <ArrowRightStartOnRectangleIcon className="h-12 w-12 text-primary" />
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+            <p className="text-default-500">Sign in to your Memorly account</p>
+          </div>
 
-                <Input
-                  autoComplete="current-password"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeSlashIcon className="h-5 w-5 text-default-400" />
-                      ) : (
-                        <EyeIcon className="h-5 w-5 text-default-400" />
-                      )}
-                    </button>
-                  }
-                  errorMessage={validationErrors.password}
-                  isInvalid={!!validationErrors.password}
-                  label="Password"
-                  placeholder="Enter your password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  variant="bordered"
-                  onChange={(e) => handleChange("password", e.target.value)}
-                />
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <Input
+              autoComplete="email"
+              errorMessage={validationErrors.email}
+              isInvalid={!!validationErrors.email}
+              label="Email"
+              placeholder="Enter your email"
+              labelPlacement="outside"
+              size="lg"
+              type="email"
+              value={formData.email}
+              variant="bordered"
+              onChange={(e) => handleChange("email", e.target.value)}
+            />
 
-                <div className="flex items-center justify-between">
-                  <Link as={NextLink} href="/forgot-password" size="sm">
-                    Forgot password?
-                  </Link>
-                </div>
-
-                <Button
-                  className="w-full"
-                  color="primary"
-                  isLoading={isPending}
-                  size="lg"
-                  type="submit"
+            <Input
+              autoComplete="current-password"
+              labelPlacement="outside"
+              endContent={
+                <button
+                  aria-label="toggle password visibility"
+                  className="focus:outline-none"
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
                 >
-                  {isPending ? "Signing In..." : "Sign In"}
-                </Button>
+                  {showPassword ? (
+                    <EyeSlashIcon className="h-5 w-5 text-default-400" />
+                  ) : (
+                    <EyeIcon className="h-5 w-5 text-default-400" />
+                  )}
+                </button>
+              }
+              errorMessage={validationErrors.password}
+              isInvalid={!!validationErrors.password}
+              label="Password"
+              placeholder="Enter your password"
+              size="lg"
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              variant="bordered"
+              onChange={(e) => handleChange("password", e.target.value)}
+            />
 
-                <p className="text-center text-small text-default-500">
-                  Don&apos;t have an account?{" "}
-                  <Link as={NextLink} href="/register" size="sm">
-                    Sign Up
-                  </Link>
-                </p>
-              </form>
-            </CardBody>
-          </Card>
-        </section>
-      </div>
+            <div className="flex items-center justify-end">
+              <Link as={NextLink} href="/forgot-password" size="sm">
+                Forgot password?
+              </Link>
+            </div>
+
+            <Button
+              className="w-full"
+              color="primary"
+              isLoading={isPending}
+              size="lg"
+              type="submit"
+            >
+              {isPending ? "Signing In..." : "Sign In"}
+            </Button>
+
+            <p className="text-center text-small text-default-500 mt-2">
+              Don&apos;t have an account?{" "}
+              <Link as={NextLink} href="/register" size="sm">
+                Sign Up
+              </Link>
+            </p>
+          </form>
+        </div>
+      </section>
     </>
   );
 }

@@ -28,3 +28,26 @@ export interface RegisterFormData extends RegisterDTO {
 }
 
 export interface LoginFormData extends LoginDTO {}
+
+export interface VerifyEmailDTO {
+  email: string;
+  otp: string;
+}
+
+export interface ResendOTPDTO {
+  email: string;
+}
+
+export interface ForgotPasswordDTO {
+  email: string;
+}
+
+export interface ResetPasswordDTO {
+  email: string;
+  otp: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordFormData extends ResetPasswordDTO {
+  confirmPassword: string;
+}

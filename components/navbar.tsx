@@ -11,7 +11,7 @@ import { ThemeSwitch } from "@/components/theme-switch";
 export const Navbar = () => {
   return (
     <HeroUINavbar
-      className="border-b border-primary shadow-xl shadow-primary/30"
+      className="border-b border-primary shadow-xl shadow-primary/30 backdrop-blur-md bg-background/80 "
       maxWidth="xl"
       position="sticky"
     >

@@ -1,41 +1,97 @@
-import { RegisterDTO, LoginDTO, AuthResponse } from "@/types/auth";
+import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API || "http://localhost:3000/api";
+import {
+  RegisterDTO,
+  LoginDTO,
+  AuthResponse,
+  VerifyEmailDTO,
+  ResendOTPDTO,
+  ForgotPasswordDTO,
+  ResetPasswordDTO,
+} from "@/types/auth";
 
 export const authApi = {
   register: async (data: RegisterDTO): Promise<AuthResponse> => {
-    const response = await fetch(`${API_URL}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      const response = await axios.post<AuthResponse>("/auth/register", data);
 
-    if (!response.ok) {
-      const error = await response.json();
-
-      throw new Error(error.message || "Registration failed");
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Registration failed");
     }
-
-    return response.json();
   },
 
   login: async (data: LoginDTO): Promise<AuthResponse> => {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      const response = await axios.post<AuthResponse>("/auth/login", data);
 
-    if (!response.ok) {
-      const error = await response.json();
-
-      throw new Error(error.message || "Login failed");
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Login failed");
     }
+  },
 
-    return response.json();
+  verifyEmail: async (
+    data: VerifyEmailDTO,
+  ): Promise<{ message: string; success: boolean }> => {
+    try {
+      const response = await axios.post<{ message: string; success: boolean }>(
+        "/auth/verify-email",
+        data,
+      );
+
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || "Email verification failed",
+      );
+    }
+  },
+
+  resendVerificationOTP: async (
+    data: ResendOTPDTO,
+  ): Promise<{ message: string; success: boolean }> => {
+    try {
+      const response = await axios.post<{ message: string; success: boolean }>(
+        "/auth/resend-verification-otp",
+        data,
+      );
+
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Failed to resend OTP");
+    }
+  },
+
+  forgotPassword: async (
+    data: ForgotPasswordDTO,
+  ): Promise<{ message: string; success: boolean }> => {
+    try {
+      const response = await axios.post<{ message: string; success: boolean }>(
+        "/auth/forgot-password",
+        data,
+      );
+
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || "Failed to send reset OTP",
+      );
+    }
+  },
+
+  resetPassword: async (
+    data: ResetPasswordDTO,
+  ): Promise<{ message: string; success: boolean }> => {
+    try {
+      const response = await axios.post<{ message: string; success: boolean }>(
+        "/auth/reset-password",
+        data,
+      );
+
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Password reset failed");
+    }
   },
 };

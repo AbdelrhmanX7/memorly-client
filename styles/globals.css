@@ -123,3 +123,88 @@
       transparent 1px
     );
 }
+
+/* React DatePicker custom styles */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: inherit;
+  background-color: hsl(var(--heroui-content1));
+  border: 2px solid hsl(var(--heroui-default-200));
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.react-datepicker__header {
+  background-color: hsl(var(--heroui-content2));
+  border-bottom: 1px solid hsl(var(--heroui-default-200));
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding-top: 8px;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: hsl(var(--heroui-foreground));
+  font-weight: 600;
+}
+
+.react-datepicker__day {
+  color: hsl(var(--heroui-foreground));
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.react-datepicker__day:hover {
+  background-color: hsl(var(--heroui-primary) / 0.2);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: hsl(var(--heroui-primary));
+  color: hsl(var(--heroui-primary-foreground));
+  font-weight: 600;
+}
+
+.react-datepicker__day--disabled {
+  color: hsl(var(--heroui-default-300));
+  cursor: not-allowed;
+}
+
+.react-datepicker__day--disabled:hover {
+  background-color: transparent;
+}
+
+.react-datepicker__month-dropdown,
+.react-datepicker__year-dropdown {
+  background-color: hsl(var(--heroui-content1));
+  border: 1px solid hsl(var(--heroui-default-200));
+  border-radius: 8px;
+}
+
+.react-datepicker__month-option,
+.react-datepicker__year-option {
+  color: hsl(var(--heroui-foreground));
+  padding: 4px 8px;
+}
+
+.react-datepicker__month-option:hover,
+.react-datepicker__year-option:hover {
+  background-color: hsl(var(--heroui-primary) / 0.2);
+}
+
+.react-datepicker__month-option--selected,
+.react-datepicker__year-option--selected {
+  background-color: hsl(var(--heroui-primary));
+  color: hsl(var(--heroui-primary-foreground));
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: hsl(var(--heroui-foreground));
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: hsl(var(--heroui-primary));
+}
