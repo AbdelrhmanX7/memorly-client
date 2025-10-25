@@ -8,7 +8,6 @@ import NextLink from "next/link";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import NextHead from "next/head";
 
-import DefaultLayout from "@/layouts/default";
 import { useRegister } from "@/service/hooks/useAuth";
 import { RegisterFormData } from "@/types/auth";
 import { siteConfig } from "@/config/site";
@@ -99,7 +98,7 @@ export default function RegisterPage() {
 
   const handleChange = (
     field: keyof RegisterFormData,
-    value: string | boolean,
+    value: string | boolean
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear validation error when user starts typing
@@ -138,7 +137,7 @@ export default function RegisterPage() {
         <meta content={pageDescription} name="twitter:description" />
       </NextHead>
 
-      <DefaultLayout>
+      <div>
         <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
           <Card className="w-full max-w-md">
             <CardHeader className="flex flex-col gap-1 px-6 pt-6">
@@ -282,7 +281,7 @@ export default function RegisterPage() {
             </CardBody>
           </Card>
         </section>
-      </DefaultLayout>
+      </div>
     </>
   );
 }

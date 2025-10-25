@@ -5,12 +5,12 @@ import { fontSans } from "@/config/fonts";
 
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html className="h-full" lang="en">
       <Head />
       <body
         className={clsx(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
+          "min-h-screen bg-background font-sans antialiased h-full [&>div]:h-full",
+          fontSans.variable
         )}
       >
         <Main />

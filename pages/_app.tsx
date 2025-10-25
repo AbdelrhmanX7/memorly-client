@@ -15,6 +15,9 @@ import { useAuthCookie, useGetUserData } from "@/hooks";
 import { fontSans, fontMono } from "@/config/fonts";
 import Logo from "@/layouts/logo";
 import { siteConfig } from "@/config/site";
+import PageTransition from "@/layouts/page-transition";
+import { RouteLoadingIndicator } from "@/layouts/route-loading-indicator";
+import { Navbar } from "@/components/navbar";
 
 const queryClient = new QueryClient();
 
@@ -94,7 +97,7 @@ export default function App({ Component, pageProps }: AppProps) {
         {/* Favicon */}
         <link href="/favicon.ico" rel="icon" />
       </Head>
-      <HeroUIProvider navigate={router.push}>
+      <HeroUIProvider className="h-full" navigate={router.push}>
         <NextThemesProvider attribute="class" defaultTheme="light">
           <QueryClientProvider client={queryClient}>
             <ToastProvider />
@@ -106,7 +109,15 @@ export default function App({ Component, pageProps }: AppProps) {
                 </div>
               </div>
             ) : (
-              <Component {...pageProps} />
+              <>
+                <PageTransition>
+                  <Navbar />
+                  <main className="container mx-auto max-w-7xl px-6 flex-grow">
+                    <Component {...pageProps} />
+                  </main>
+                </PageTransition>
+                <RouteLoadingIndicator />
+              </>
             )}
           </QueryClientProvider>
         </NextThemesProvider>

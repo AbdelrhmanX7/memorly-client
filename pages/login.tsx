@@ -7,7 +7,6 @@ import NextLink from "next/link";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import NextHead from "next/head";
 
-import DefaultLayout from "@/layouts/default";
 import { useLogin } from "@/service/hooks/useAuth";
 import { LoginFormData } from "@/types/auth";
 import { siteConfig } from "@/config/site";
@@ -93,7 +92,7 @@ export default function LoginPage() {
         <meta content={pageDescription} name="twitter:description" />
       </NextHead>
 
-      <DefaultLayout>
+      <div>
         <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
           <Card className="w-full max-w-md">
             <CardHeader className="flex flex-col gap-1 px-6 pt-6">
@@ -175,7 +174,7 @@ export default function LoginPage() {
             </CardBody>
           </Card>
         </section>
-      </DefaultLayout>
+      </div>
     </>
   );
 }
