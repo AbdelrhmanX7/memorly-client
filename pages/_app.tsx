@@ -18,6 +18,7 @@ import { siteConfig } from "@/config/site";
 import PageTransition from "@/layouts/page-transition";
 import { RouteLoadingIndicator } from "@/layouts/route-loading-indicator";
 import { Navbar } from "@/components/navbar";
+import { BottomNavbar } from "@/components/bottom-navbar";
 
 const queryClient = new QueryClient();
 
@@ -26,12 +27,14 @@ axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { token } = useGetUserData();
   const { setAuthToken } = useAuthCookie();
 
   const localStorageToken = useReadLocalStorage<string>("token") || "";
+
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   useEffect(() => {
     async function getToken() {
@@ -44,6 +47,8 @@ export default function App({ Component, pageProps }: AppProps) {
       if (tokenInfo) {
         setAuthToken(tokenInfo);
       }
+
+      setIsUserLoggedIn(!!tokenInfo);
 
       setIsLoading(false);
     }
@@ -97,7 +102,7 @@ export default function App({ Component, pageProps }: AppProps) {
         {/* Favicon */}
         <link href="/favicon.ico" rel="icon" />
       </Head>
-      <HeroUIProvider className="h-full" navigate={router.push}>
+      <HeroUIProvider className="h-full flex flex-col" navigate={router.push}>
         <NextThemesProvider attribute="class" defaultTheme="light">
           <QueryClientProvider client={queryClient}>
             <ToastProvider />
@@ -110,12 +115,13 @@ export default function App({ Component, pageProps }: AppProps) {
               </div>
             ) : (
               <>
+                <Navbar />
                 <PageTransition>
-                  <Navbar />
-                  <main className="container mx-auto max-w-7xl px-6 flex-grow">
+                  <main className="container mx-auto max-w-7xl px-6 h-full mb-[85px]">
                     <Component {...pageProps} />
                   </main>
                 </PageTransition>
+                {isUserLoggedIn && <BottomNavbar />}
                 <RouteLoadingIndicator />
               </>
             )}

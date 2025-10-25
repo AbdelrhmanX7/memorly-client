@@ -6,6 +6,7 @@ import { FeaturesCarousel } from "@/components/features-carousel";
 export default function IndexPage() {
   return (
     <section className="relative flex flex-col items-center justify-between h-full gap-4 py-0 md:py-10 overflow-hidden">
+      {/* Grid Background */}
       <div className="absolute inset-0 grid-background pointer-events-none" />
 
       <div className="relative z-10 w-full [&_.swiper-pagination]:!fixed mt-auto">

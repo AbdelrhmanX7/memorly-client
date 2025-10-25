@@ -12,7 +12,7 @@ export interface LoginDTO {
 }
 
 export type User = {
-  _id: string;
+  id: string;
   username: string;
   email: string;
   dateOfBirth: string;
@@ -27,7 +27,7 @@ export interface RegisterFormData extends RegisterDTO {
   confirmPassword: string;
 }
 
-export interface LoginFormData extends LoginDTO {}
+export interface LoginFormData extends LoginDTO { }
 
 export interface VerifyEmailDTO {
   email: string;

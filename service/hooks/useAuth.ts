@@ -32,13 +32,12 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: (data: LoginDTO) => authApi.login(data),
-    onSuccess: (data) => {
-      // Store token in localStorage
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+    onSuccess: (data: any) => {
+      localStorage.setItem("token", JSON.stringify(data.data.token));
+      localStorage.setItem("user", JSON.stringify(data.data.user));
 
-      // Redirect to dashboard or home
-      router.push("/");
+      // Redirect to dashboard
+      router.push("/dashboard");
     },
   });
 };

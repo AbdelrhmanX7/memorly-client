@@ -7,7 +7,7 @@ import { useAuthCookie } from "./useAuthCookie";
 import { User } from "@/types/auth";
 
 export const useGetUserData = () => {
-  const user = useReadLocalStorage<User>("user", {});
+  const user = useReadLocalStorage<User>("user");
 
   const [userData, setUserData] = useState<User | null>(null);
 
@@ -15,7 +15,7 @@ export const useGetUserData = () => {
 
   useEffect(() => {
     if (user) {
-      if (!user?._id?.length && getAuthToken()?.length > 0) {
+      if (!user?.id?.length && getAuthToken()?.length > 0) {
         removeAuthToken();
 
         return;

@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import NextHead from "next/head";
 import { useRouter } from "next/router";
-import { addToast } from "@heroui/react";
+import { addToast, Card, CardBody } from "@heroui/react";
 
 import { useLogin } from "@/service/hooks/useAuth";
 import { LoginFormData } from "@/types/auth";
@@ -168,72 +168,74 @@ export default function LoginPage() {
             <p className="text-default-500">Sign in to your Memorly account</p>
           </div>
 
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <Input
-              autoComplete="email"
-              errorMessage={validationErrors.email}
-              isInvalid={!!validationErrors.email}
-              label="Email"
-              placeholder="Enter your email"
-              labelPlacement="outside"
-              size="lg"
-              type="email"
-              value={formData.email}
-              variant="bordered"
-              onChange={(e) => handleChange("email", e.target.value)}
-            />
+          <Card className="p-6 shadow-medium">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <Input
+                autoComplete="email"
+                errorMessage={validationErrors.email}
+                isInvalid={!!validationErrors.email}
+                label="Email"
+                labelPlacement="outside"
+                placeholder="Enter your email"
+                size="lg"
+                type="email"
+                value={formData.email}
+                variant="bordered"
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
 
-            <Input
-              autoComplete="current-password"
-              labelPlacement="outside"
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeSlashIcon className="h-5 w-5 text-default-400" />
-                  ) : (
-                    <EyeIcon className="h-5 w-5 text-default-400" />
-                  )}
-                </button>
-              }
-              errorMessage={validationErrors.password}
-              isInvalid={!!validationErrors.password}
-              label="Password"
-              placeholder="Enter your password"
-              size="lg"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              variant="bordered"
-              onChange={(e) => handleChange("password", e.target.value)}
-            />
+              <Input
+                autoComplete="current-password"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeSlashIcon className="h-5 w-5 text-default-400" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5 text-default-400" />
+                    )}
+                  </button>
+                }
+                errorMessage={validationErrors.password}
+                isInvalid={!!validationErrors.password}
+                label="Password"
+                labelPlacement="outside"
+                placeholder="Enter your password"
+                size="lg"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                variant="bordered"
+                onChange={(e) => handleChange("password", e.target.value)}
+              />
 
-            <div className="flex items-center justify-end">
-              <Link as={NextLink} href="/forgot-password" size="sm">
-                Forgot password?
-              </Link>
-            </div>
+              <div className="flex items-center justify-end">
+                <Link as={NextLink} href="/forgot-password" size="sm">
+                  Forgot password?
+                </Link>
+              </div>
 
-            <Button
-              className="w-full"
-              color="primary"
-              isLoading={isPending}
-              size="lg"
-              type="submit"
-            >
-              {isPending ? "Signing In..." : "Sign In"}
-            </Button>
+              <Button
+                className="w-full"
+                color="primary"
+                isLoading={isPending}
+                size="lg"
+                type="submit"
+              >
+                {isPending ? "Signing In..." : "Sign In"}
+              </Button>
 
-            <p className="text-center text-small text-default-500 mt-2">
-              Don&apos;t have an account?{" "}
-              <Link as={NextLink} href="/register" size="sm">
-                Sign Up
-              </Link>
-            </p>
-          </form>
+              <p className="text-center text-small text-default-500 mt-2">
+                Don&apos;t have an account?{" "}
+                <Link as={NextLink} href="/register" size="sm">
+                  Sign Up
+                </Link>
+              </p>
+            </form>
+          </Card>
         </div>
       </section>
     </>

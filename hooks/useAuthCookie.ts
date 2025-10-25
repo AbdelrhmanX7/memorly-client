@@ -23,7 +23,7 @@ export const useAuthCookie = () => {
 
   const removeAuthToken = useCallback(async () => {
     setLocalStorageToken("");
-    setUser({});
+    // setUser({});
     deleteCookie("token");
   }, []);
 
