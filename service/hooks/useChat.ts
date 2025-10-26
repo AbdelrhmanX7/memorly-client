@@ -68,14 +68,61 @@ export function useCreateChat(token: string) {
 }
 
 /**
- * Hook to send a message
+ * Hook to send a message with optimistic updates
+ * Message appears immediately in UI before server responds
  */
 export function useSendMessage(token: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (payload: SendMessagePayload) => sendMessage(payload, token),
-    onSuccess: (_data, variables) => {
+    // Optimistically update the UI before the API responds
+    onMutate: async (payload) => {
+      // Cancel any outgoing refetches to avoid overwriting optimistic update
+      await queryClient.cancelQueries({
+        queryKey: ["chat", payload.chatId, "messages"],
+      });
+
+      // Snapshot the previous value
+      const previousMessages = queryClient.getQueryData([
+        "chat",
+        payload.chatId,
+        "messages",
+      ]);
+
+      // Optimistically add the new message to the cache
+      queryClient.setQueryData(
+        ["chat", payload.chatId, "messages"],
+        (old: any) => {
+          const optimisticMessage = {
+            id: `temp-${Date.now()}`, // Temporary ID
+            userId: "current-user", // Will be replaced by server response
+            chatId: payload.chatId,
+            text: payload.text,
+            senderType: payload.senderType,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isOptimistic: true, // Flag to identify optimistic messages
+          };
+
+          return old ? [...old, optimisticMessage] : [optimisticMessage];
+        },
+      );
+
+      // Return context with previous messages for rollback
+      return { previousMessages };
+    },
+    // If mutation fails, rollback to previous state
+    onError: (_error, variables, context) => {
+      if (context?.previousMessages) {
+        queryClient.setQueryData(
+          ["chat", variables.chatId, "messages"],
+          context.previousMessages,
+        );
+      }
+    },
+    // Always refetch after success or error to sync with server
+    onSettled: (_data, _error, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["chat", variables.chatId, "messages"],
       });
@@ -128,6 +175,7 @@ export function useStreamingResponse(token: string) {
 
   const startStreaming = useCallback(
     async (chatId: string, text: string, limit?: number) => {
+      console.log("Starting stream for chat:", chatId, "with text:", text);
       setIsStreaming(true);
       setStreamedContent("");
       setError(null);
@@ -140,10 +188,12 @@ export function useStreamingResponse(token: string) {
           limit,
           // onChunk callback - updates UI in real-time
           (chunk: string) => {
+            console.log("Received chunk:", chunk);
             setStreamedContent((prev) => prev + chunk);
           },
           // onComplete callback - refresh messages
           () => {
+            console.log("Streaming completed successfully");
             setIsStreaming(false);
             queryClient.invalidateQueries({
               queryKey: ["chat", chatId, "messages"],
@@ -152,14 +202,14 @@ export function useStreamingResponse(token: string) {
           },
           // onError callback
           (err: Error) => {
+            console.error("Streaming error:", err);
             setError(err);
             setIsStreaming(false);
           },
         );
       } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Streaming failed"),
-        );
+        console.error("Stream exception:", err);
+        setError(err instanceof Error ? err : new Error("Streaming failed"));
         setIsStreaming(false);
       }
     },

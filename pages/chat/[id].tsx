@@ -30,6 +30,7 @@ import {
   useChatMessages,
   useDeleteChat,
   useDeleteMessage,
+  useSendMessage,
   useStreamingResponse,
 } from "@/service/hooks/useChat";
 
@@ -69,6 +70,7 @@ export default function ChatConversationPage() {
   } = useChatMessages(chatId as string, token);
   const deleteChat = useDeleteChat(token);
   const deleteMessageMutation = useDeleteMessage(token);
+  const sendMessageMutation = useSendMessage(token);
   const {
     isStreaming,
     streamedContent,
@@ -127,18 +129,44 @@ export default function ChatConversationPage() {
 
     const userMessage = messageInput.trim();
 
+    // Clear input immediately for better UX
     setMessageInput("");
 
     try {
-      // Start streaming AI response
-      await startStreaming(chatId as string, userMessage, 10);
+      // Optimistically add user message to UI immediately
+      sendMessageMutation.mutate(
+        {
+          chatId: chatId as string,
+          text: userMessage,
+          senderType: "user",
+        },
+        {
+          onSuccess: () => {
+            // After user message is saved, start streaming AI response
+            startStreaming(chatId as string, userMessage, 10).catch((err) => {
+              console.error("Streaming failed:", err);
+              addToast({
+                title: "Error",
+                description: "Failed to generate AI response.",
+                color: "danger",
+              });
+            });
+          },
+          onError: (error) => {
+            console.error("Failed to send message:", error);
+            addToast({
+              title: "Error",
+              description: "Failed to send message. Please try again.",
+              color: "danger",
+            });
+            // Restore message input if it failed
+            setMessageInput(userMessage);
+          },
+        },
+      );
     } catch (error) {
-      console.error("Failed to send message:", error);
-      addToast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        color: "danger",
-      });
+      console.error("Unexpected error:", error);
+      setMessageInput(userMessage);
     }
   };
 
@@ -506,8 +534,12 @@ export default function ChatConversationPage() {
               <Button
                 isIconOnly
                 color="primary"
-                isDisabled={!messageInput.trim() || isStreaming}
-                isLoading={isStreaming}
+                isDisabled={
+                  !messageInput.trim() ||
+                  isStreaming ||
+                  sendMessageMutation.isPending
+                }
+                isLoading={isStreaming || sendMessageMutation.isPending}
                 type="submit"
               >
                 <Send className="h-4 w-4" />

@@ -204,7 +204,7 @@ export async function generateStreamingResponse(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token.replaceAll('"', '')}`,
+        Authorization: `Bearer ${token.replaceAll('"', "")}`,
       },
       body: JSON.stringify({
         chatId,
@@ -226,18 +226,37 @@ export async function generateStreamingResponse(
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let fullResponse = "";
+    let buffer = ""; // Buffer to accumulate incomplete chunks
 
     while (true) {
       const { done, value } = await reader.read();
 
-      if (done) break;
+      if (done) {
+        // Process any remaining buffer
+        if (buffer.trim()) {
+          console.warn("Unprocessed buffer at end:", buffer);
+        }
+        break;
+      }
 
+      // Decode the chunk and add to buffer
       const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split("\n");
+
+      buffer += chunk;
+
+      // Split by newlines, but keep the last incomplete line in buffer
+      const lines = buffer.split("\n");
+
+      buffer = lines.pop() || ""; // Keep the last incomplete line
 
       for (const line of lines) {
-        if (line.startsWith("data: ")) {
-          const data = line.slice(6).trim();
+        const trimmedLine = line.trim();
+
+        if (!trimmedLine) continue;
+
+        // Handle SSE format: "data: ..."
+        if (trimmedLine.startsWith("data:")) {
+          const data = trimmedLine.slice(5).trim(); // Remove "data:" prefix
 
           if (data === "[DONE]") {
             if (onComplete) {
@@ -246,6 +265,9 @@ export async function generateStreamingResponse(
 
             return;
           }
+
+          // Skip empty data
+          if (!data) continue;
 
           try {
             const parsed = JSON.parse(data);
@@ -257,8 +279,8 @@ export async function generateStreamingResponse(
                 onChunk(parsed.content);
               }
             }
-          } catch {
-            // Skip invalid JSON
+          } catch (e) {
+            console.error("Failed to parse SSE data:", data, e);
           }
         }
       }
