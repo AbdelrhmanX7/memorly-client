@@ -15,6 +15,7 @@ import { addToast } from "@heroui/react";
 import { useRegister } from "@/service/hooks/useAuth";
 import { RegisterFormData } from "@/types/auth";
 import { siteConfig } from "@/config/site";
+import { validateRegisterForm } from "@/validation/auth";
 
 export default function RegisterPage() {
   const {
@@ -74,53 +75,7 @@ export default function RegisterPage() {
   }, [isError, error]);
 
   const validateForm = (): boolean => {
-    const errors: Partial<Record<keyof RegisterFormData, string>> = {};
-
-    // Username validation
-    if (!formData.username.trim()) {
-      errors.username = "Username is required";
-    } else if (formData.username.length < 3) {
-      errors.username = "Username must be at least 3 characters";
-    }
-
-    // Email validation
-    if (!formData.email.trim()) {
-      errors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = "Invalid email format";
-    }
-
-    // Password validation
-    if (!formData.password) {
-      errors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      errors.password = "Password must be at least 8 characters";
-    }
-
-    // Confirm password validation
-    if (!formData.confirmPassword) {
-      errors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
-    }
-
-    // Date of birth validation
-    if (!formData.dateOfBirth) {
-      errors.dateOfBirth = "Date of birth is required";
-    } else {
-      const birthDate = new Date(formData.dateOfBirth);
-      const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
-
-      if (age < 13) {
-        errors.dateOfBirth = "You must be at least 13 years old";
-      }
-    }
-
-    // Privacy policy validation
-    if (!formData.acceptPrivacyPolicy) {
-      errors.acceptPrivacyPolicy = "You must accept the privacy policy";
-    }
+    const errors = validateRegisterForm(formData);
 
     setValidationErrors(errors);
 
@@ -134,14 +89,14 @@ export default function RegisterPage() {
       return;
     }
 
-    const { confirmPassword, ...registerData } = formData;
+    const { confirmPassword: _, ...registerData } = formData;
 
     register(registerData);
   };
 
   const handleChange = (
     field: keyof RegisterFormData,
-    value: string | boolean
+    value: string | boolean,
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear validation error when user starts typing

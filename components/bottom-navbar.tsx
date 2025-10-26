@@ -12,13 +12,13 @@ import {
   UserCircleIcon,
   ChatBubbleLeftRightIcon,
   PlusCircleIcon,
-  DocumentTextIcon,
+  SparklesIcon,
   HomeIcon,
 } from "@heroicons/react/24/outline";
 import {
   UserCircleIcon as UserCircleIconSolid,
   ChatBubbleLeftRightIcon as ChatBubbleLeftRightIconSolid,
-  DocumentTextIcon as DocumentTextIconSolid,
+  SparklesIcon as SparklesIconSolid,
   HomeIcon as HomeIconSolid,
 } from "@heroicons/react/24/solid";
 
@@ -47,10 +47,10 @@ export const BottomNavbar = () => {
       isUpload: true,
     },
     {
-      name: "Notes",
-      href: "/notes",
-      icon: DocumentTextIcon,
-      activeIcon: DocumentTextIconSolid,
+      name: "Memories",
+      href: "/memories",
+      icon: SparklesIcon,
+      activeIcon: SparklesIconSolid,
     },
     {
       name: "Profile",

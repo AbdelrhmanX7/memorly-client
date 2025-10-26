@@ -5,7 +5,7 @@ import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import NextHead from "next/head";
 import { KeyIcon } from "@heroicons/react/24/outline";
-import { addToast } from "@heroui/react";
+import { addToast, Card } from "@heroui/react";
 
 import { useForgotPassword } from "@/service/hooks/useAuth";
 import { siteConfig } from "@/config/site";
@@ -119,40 +119,42 @@ export default function ForgotPasswordPage() {
             </p>
           </div>
 
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <Input
-              autoComplete="email"
-              errorMessage={emailError}
-              isInvalid={!!emailError}
-              label="Email"
-              placeholder="Enter your email"
-              size="lg"
-              type="email"
-              labelPlacement="outside"
-              value={email}
-              variant="bordered"
-              onChange={(e) => handleEmailChange(e.target.value)}
-            />
+          <Card className="p-6 shadow-medium">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <Input
+                autoComplete="email"
+                errorMessage={emailError}
+                isInvalid={!!emailError}
+                label="Email"
+                labelPlacement="outside"
+                placeholder="Enter your email"
+                size="lg"
+                type="email"
+                value={email}
+                variant="bordered"
+                onChange={(e) => handleEmailChange(e.target.value)}
+              />
 
-            <Button
-              className="w-full"
-              color="primary"
-              isLoading={isPending}
-              size="lg"
-              type="submit"
-            >
-              {isPending ? "Sending Code..." : "Send Reset Code"}
-            </Button>
+              <Button
+                className="w-full"
+                color="primary"
+                isLoading={isPending}
+                size="lg"
+                type="submit"
+              >
+                {isPending ? "Sending Code..." : "Send Reset Code"}
+              </Button>
 
-            <div className="text-center mt-2">
-              <p className="text-small text-default-500">
-                Remember your password?{" "}
-                <Link as={NextLink} href="/login" size="sm">
-                  Sign In
-                </Link>
-              </p>
-            </div>
-          </form>
+              <div className="text-center mt-2">
+                <p className="text-small text-default-500">
+                  Remember your password?{" "}
+                  <Link as={NextLink} href="/login" size="sm">
+                    Sign In
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </Card>
         </div>
       </section>
     </>

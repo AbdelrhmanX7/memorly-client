@@ -4,11 +4,8 @@ import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import NextHead from "next/head";
 import { useRouter } from "next/router";
-import {
-  CheckCircleIcon,
-  EnvelopeIcon,
-} from "@heroicons/react/24/outline";
-import { addToast } from "@heroui/react";
+import { CheckCircleIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
+import { addToast, Card } from "@heroui/react";
 
 import { useVerifyEmail, useResendOTP } from "@/service/hooks/useAuth";
 import { siteConfig } from "@/config/site";
@@ -191,53 +188,54 @@ export default function VerifyEmailPage() {
                 </p>
               </div>
 
-              <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                <Input
-                  autoComplete="off"
-                  description="Enter the 6-digit code sent to your email"
-                  label="Verification Code"
-                  maxLength={6}
-                  placeholder="Enter 6-digit code"
-                  labelPlacement="outside"
-                  size="lg"
-                  type="text"
-                  value={otp}
-                  variant="bordered"
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
+              <Card className="p-6 shadow-medium">
+                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                  <Input
+                    autoComplete="off"
+                    description="Enter the 6-digit code sent to your email"
+                    label="Verification Code"
+                    labelPlacement="outside"
+                    maxLength={6}
+                    placeholder="Enter 6-digit code"
+                    size="lg"
+                    type="text"
+                    value={otp}
+                    variant="bordered"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
 
-                    setOtp(value);
-                  }}
-                />
+                      setOtp(value);
+                    }}
+                  />
 
-                <Button
-                  className="w-full"
-                  color="primary"
-                  isDisabled={otp.length !== 6}
-                  isLoading={isVerifying}
-                  size="lg"
-                  type="submit"
-                >
-                  {isVerifying ? "Verifying..." : "Verify Email"}
-                </Button>
-
-                <div className="text-center">
-                  <p className="text-xl font-bold text-warning mb-2">
-                    Didn&apos;t receive the code?
-                  </p>
                   <Button
-                    isDisabled={resendCooldown > 0}
-                    isLoading={isResending}
-                    color="secondary"
-                    onPress={handleResendOTP}
-                    variant="light"
+                    className="w-full"
+                    color="primary"
+                    isDisabled={otp.length !== 6}
+                    isLoading={isVerifying}
+                    size="lg"
+                    type="submit"
                   >
-                    {resendCooldown > 0
-                      ? `Resend in ${resendCooldown}s`
-                      : "Resend Code"}
+                    {isVerifying ? "Verifying..." : "Verify Email"}
                   </Button>
-                </div>
-              </form>
+                </form>
+              </Card>
+              <div className="text-center mt-4">
+                <p className="text-xl font-bold text-warning mb-2">
+                  Didn&apos;t receive the code?
+                </p>
+                <Button
+                  color="secondary"
+                  isDisabled={resendCooldown > 0}
+                  isLoading={isResending}
+                  variant="light"
+                  onPress={handleResendOTP}
+                >
+                  {resendCooldown > 0
+                    ? `Resend in ${resendCooldown}s`
+                    : "Resend Code"}
+                </Button>
+              </div>
             </>
           )}
         </div>

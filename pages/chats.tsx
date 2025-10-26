@@ -31,7 +31,7 @@ export default function ChatsPage() {
         <meta content="noindex, nofollow" name="robots" />
       </NextHead>
 
-      <div className="relative flex h-full flex-col pb-20">
+      <div className="relative flex h-fit flex-col pb-20">
         <div className="absolute inset-0 grid-background pointer-events-none" />
 
         <main className="relative z-10 flex-1 px-4 py-8">

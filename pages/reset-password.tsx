@@ -10,11 +10,12 @@ import {
   EyeSlashIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
-import { addToast } from "@heroui/react";
+import { addToast, Card } from "@heroui/react";
 
 import { useResetPassword } from "@/service/hooks/useAuth";
 import { ResetPasswordFormData } from "@/types/auth";
 import { siteConfig } from "@/config/site";
+import { validateResetPasswordForm } from "@/validation/auth";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -85,26 +86,7 @@ export default function ResetPasswordPage() {
   }, [queryEmail, router]);
 
   const validateForm = (): boolean => {
-    const errors: Partial<Record<keyof ResetPasswordFormData, string>> = {};
-
-    // OTP validation
-    if (!formData.otp || formData.otp.length !== 6) {
-      errors.otp = "Please enter the 6-digit code";
-    }
-
-    // Password validation
-    if (!formData.newPassword) {
-      errors.newPassword = "Password is required";
-    } else if (formData.newPassword.length < 8) {
-      errors.newPassword = "Password must be at least 8 characters";
-    }
-
-    // Confirm password validation
-    if (!formData.confirmPassword) {
-      errors.confirmPassword = "Please confirm your password";
-    } else if (formData.newPassword !== formData.confirmPassword) {
-      errors.confirmPassword = "Passwords do not match";
-    }
+    const errors = validateResetPasswordForm(formData);
 
     setValidationErrors(errors);
 
@@ -161,101 +143,105 @@ export default function ResetPasswordPage() {
             </p>
           </div>
 
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <Input
-              autoComplete="off"
-              errorMessage={validationErrors.otp}
-              isInvalid={!!validationErrors.otp}
-              label="Verification Code"
-              labelPlacement="outside"
-              maxLength={6}
-              placeholder="Enter 6-digit code"
-              size="lg"
-              type="text"
-              value={formData.otp}
-              variant="bordered"
-              onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, "");
+          <Card className="p-6 shadow-medium">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <Input
+                autoComplete="off"
+                errorMessage={validationErrors.otp}
+                isInvalid={!!validationErrors.otp}
+                label="Verification Code"
+                labelPlacement="outside"
+                maxLength={6}
+                placeholder="Enter 6-digit code"
+                size="lg"
+                type="text"
+                value={formData.otp}
+                variant="bordered"
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
 
-                handleChange("otp", value);
-              }}
-            />
+                  handleChange("otp", value);
+                }}
+              />
 
-            <Input
-              autoComplete="new-password"
-              labelPlacement="outside"
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeSlashIcon className="h-5 w-5 text-default-400" />
-                  ) : (
-                    <EyeIcon className="h-5 w-5 text-default-400" />
-                  )}
-                </button>
-              }
-              errorMessage={validationErrors.newPassword}
-              isInvalid={!!validationErrors.newPassword}
-              label="New Password"
-              placeholder="Enter your new password"
-              size="lg"
-              type={showPassword ? "text" : "password"}
-              value={formData.newPassword}
-              variant="bordered"
-              onChange={(e) => handleChange("newPassword", e.target.value)}
-            />
+              <Input
+                autoComplete="new-password"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeSlashIcon className="h-5 w-5 text-default-400" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5 text-default-400" />
+                    )}
+                  </button>
+                }
+                errorMessage={validationErrors.newPassword}
+                isInvalid={!!validationErrors.newPassword}
+                label="New Password"
+                labelPlacement="outside"
+                placeholder="Enter your new password"
+                size="lg"
+                type={showPassword ? "text" : "password"}
+                value={formData.newPassword}
+                variant="bordered"
+                onChange={(e) => handleChange("newPassword", e.target.value)}
+              />
 
-            <Input
-              autoComplete="new-password"
-              labelPlacement="outside"
-              endContent={
-                <button
-                  aria-label="toggle confirm password visibility"
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <EyeSlashIcon className="h-5 w-5 text-default-400" />
-                  ) : (
-                    <EyeIcon className="h-5 w-5 text-default-400" />
-                  )}
-                </button>
-              }
-              errorMessage={validationErrors.confirmPassword}
-              isInvalid={!!validationErrors.confirmPassword}
-              label="Confirm Password"
-              placeholder="Confirm your new password"
-              size="lg"
-              type={showConfirmPassword ? "text" : "password"}
-              value={formData.confirmPassword}
-              variant="bordered"
-              onChange={(e) => handleChange("confirmPassword", e.target.value)}
-            />
+              <Input
+                autoComplete="new-password"
+                endContent={
+                  <button
+                    aria-label="toggle confirm password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeSlashIcon className="h-5 w-5 text-default-400" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5 text-default-400" />
+                    )}
+                  </button>
+                }
+                errorMessage={validationErrors.confirmPassword}
+                isInvalid={!!validationErrors.confirmPassword}
+                label="Confirm Password"
+                labelPlacement="outside"
+                placeholder="Confirm your new password"
+                size="lg"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                variant="bordered"
+                onChange={(e) =>
+                  handleChange("confirmPassword", e.target.value)
+                }
+              />
 
-            <Button
-              className="w-full"
-              color="primary"
-              isLoading={isPending}
-              size="lg"
-              type="submit"
-            >
-              {isPending ? "Resetting Password..." : "Reset Password"}
-            </Button>
+              <Button
+                className="w-full"
+                color="primary"
+                isLoading={isPending}
+                size="lg"
+                type="submit"
+              >
+                {isPending ? "Resetting Password..." : "Reset Password"}
+              </Button>
 
-            <div className="text-center mt-2">
-              <p className="text-small text-default-500">
-                Remember your password?{" "}
-                <Link as={NextLink} href="/login" size="sm">
-                  Sign In
-                </Link>
-              </p>
-            </div>
-          </form>
+              <div className="text-center mt-2">
+                <p className="text-small text-default-500">
+                  Remember your password?{" "}
+                  <Link as={NextLink} href="/login" size="sm">
+                    Sign In
+                  </Link>
+                </p>
+              </div>
+            </form>
+          </Card>
         </div>
       </section>
     </>

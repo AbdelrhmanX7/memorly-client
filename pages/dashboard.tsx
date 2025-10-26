@@ -49,7 +49,7 @@ export default function DashboardPage() {
         <meta content="noindex, nofollow" name="robots" />
       </NextHead>
 
-      <div className="relative flex h-full flex-col pb-20">
+      <div className="relative flex h-fit flex-col pb-20">
         {/* Grid Background */}
         <div className="absolute inset-0 grid-background pointer-events-none" />
 

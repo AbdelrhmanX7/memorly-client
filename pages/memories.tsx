@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NextHead from "next/head";
-import { DocumentTextIcon } from "@heroicons/react/24/outline";
+import { SparklesIcon } from "@heroicons/react/24/outline";
 
-import { BottomNavbar } from "@/components/bottom-navbar";
 import { siteConfig } from "@/config/site";
 
-export default function NotesPage() {
+export default function MemoriesPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -27,11 +26,11 @@ export default function NotesPage() {
   return (
     <>
       <NextHead>
-        <title>Notes | {siteConfig.name}</title>
+        <title>Memories | {siteConfig.name}</title>
         <meta content="noindex, nofollow" name="robots" />
       </NextHead>
 
-      <div className="relative flex h-full flex-col pb-20">
+      <div className="relative flex h-fit flex-col pb-20">
         <div className="absolute inset-0 grid-background pointer-events-none" />
 
         <main className="relative z-10 flex-1 px-4 py-8">
@@ -39,18 +38,18 @@ export default function NotesPage() {
             <div className="mb-8 text-center">
               <div className="mb-4 flex justify-center">
                 <div className="rounded-full bg-primary/10 p-4">
-                  <DocumentTextIcon className="h-16 w-16 text-primary" />
+                  <SparklesIcon className="h-16 w-16 text-primary" />
                 </div>
               </div>
-              <h1 className="mb-2 text-3xl font-bold">Notes</h1>
+              <h1 className="mb-2 text-3xl font-bold">Memories</h1>
               <p className="text-default-500">
-                Write down your thoughts and ideas
+                Capture and preserve your precious moments
               </p>
             </div>
 
             <div className="rounded-large bg-content1 p-12 text-center shadow-medium">
               <p className="text-lg text-default-400">
-                No notes yet. Start writing your first note!
+                No memories yet. Start creating your first memory!
               </p>
             </div>
           </div>

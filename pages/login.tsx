@@ -15,6 +15,7 @@ import { addToast, Card, CardBody } from "@heroui/react";
 import { useLogin } from "@/service/hooks/useAuth";
 import { LoginFormData } from "@/types/auth";
 import { siteConfig } from "@/config/site";
+import { validateLoginForm } from "@/validation/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,19 +33,7 @@ export default function LoginPage() {
   >({});
 
   const validateForm = (): boolean => {
-    const errors: Partial<Record<keyof LoginFormData, string>> = {};
-
-    // Email validation
-    if (!formData.email.trim()) {
-      errors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = "Invalid email format";
-    }
-
-    // Password validation
-    if (!formData.password) {
-      errors.password = "Password is required";
-    }
+    const errors = validateLoginForm(formData);
 
     setValidationErrors(errors);
 
