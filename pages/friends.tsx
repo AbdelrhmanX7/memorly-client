@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import NextHead from "next/head";
 import { UsersIcon } from "@heroicons/react/24/outline";
 
-import { BottomNavbar } from "@/components/bottom-navbar";
 import { siteConfig } from "@/config/site";
 
 export default function FriendsPage() {

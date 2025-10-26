@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NextHead from "next/head";
-import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+import { Tabs, Tab } from "@heroui/tabs";
+import { MessageSquarePlus, History } from "lucide-react";
 
-import { BottomNavbar } from "@/components/bottom-navbar";
 import { siteConfig } from "@/config/site";
+import { ChatList } from "@/components/chat-list";
+import { NewChatForm } from "@/components/new-chat-form";
 
 export default function ChatsPage() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<string>("new");
+  const [token, setToken] = useState<string>("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("token");
 
-    if (!token) {
+    if (!storedToken) {
       router.push("/login");
 
       return;
     }
 
+    setToken(storedToken);
     setIsAuthenticated(true);
   }, [router]);
 
@@ -31,27 +36,54 @@ export default function ChatsPage() {
         <meta content="noindex, nofollow" name="robots" />
       </NextHead>
 
-      <div className="relative flex h-fit flex-col pb-20">
+      <div className="relative flex h-fit flex-col">
         <div className="absolute inset-0 grid-background pointer-events-none" />
 
-        <main className="relative z-10 flex-1 px-4 py-8">
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-8 text-center">
-              <div className="mb-4 flex justify-center">
-                <div className="rounded-full bg-primary/10 p-4">
-                  <ChatBubbleLeftRightIcon className="h-16 w-16 text-primary" />
-                </div>
-              </div>
-              <h1 className="mb-2 text-3xl font-bold">Chats</h1>
-              <p className="text-default-500">
-                Connect and share memories with friends
+        <main className="relative z-10 flex-1 py-6">
+          <div>
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold">Chat</h1>
+              <p className="mt-2 text-lg text-default-500">
+                Have conversations with the system
               </p>
             </div>
 
-            <div className="rounded-large bg-content1 p-12 text-center shadow-medium">
-              <p className="text-lg text-default-400">
-                No chats yet. Start a conversation with your friends!
-              </p>
+            <Tabs
+              fullWidth
+              aria-label="Chat tabs"
+              className="mb-6"
+              color="primary"
+              selectedKey={selectedTab}
+              size="lg"
+              variant="bordered"
+              onSelectionChange={(key) => setSelectedTab(key as string)}
+            >
+              <Tab
+                key="new"
+                title={
+                  <div className="flex items-center gap-2">
+                    <MessageSquarePlus className="h-4 w-4" />
+                    <span>New Chat</span>
+                  </div>
+                }
+              />
+              <Tab
+                key="previous"
+                title={
+                  <div className="flex items-center gap-2">
+                    <History className="h-4 w-4" />
+                    <span>Previous Chats</span>
+                  </div>
+                }
+              />
+            </Tabs>
+
+            <div className="min-h-[400px]">
+              {selectedTab === "new" ? (
+                <NewChatForm token={token} />
+              ) : (
+                <ChatList token={token} />
+              )}
             </div>
           </div>
         </main>

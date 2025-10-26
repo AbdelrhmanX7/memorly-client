@@ -14,6 +14,7 @@ export const validateEmail = (email: string): string | undefined => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return "Invalid email format";
   }
+
   return undefined;
 };
 
@@ -27,6 +28,7 @@ export const validatePassword = (password: string): string | undefined => {
   if (password.length < 8) {
     return "Password must be at least 8 characters";
   }
+
   return undefined;
 };
 
@@ -35,7 +37,7 @@ export const validatePassword = (password: string): string | undefined => {
  */
 export const validatePasswordMatch = (
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
 ): string | undefined => {
   if (!confirmPassword) {
     return "Please confirm your password";
@@ -43,6 +45,7 @@ export const validatePasswordMatch = (
   if (password !== confirmPassword) {
     return "Passwords do not match";
   }
+
   return undefined;
 };
 
@@ -56,6 +59,7 @@ export const validateUsername = (username: string): string | undefined => {
   if (username.length < 3) {
     return "Username must be at least 3 characters";
   }
+
   return undefined;
 };
 
@@ -64,7 +68,7 @@ export const validateUsername = (username: string): string | undefined => {
  */
 export const validateDateOfBirth = (
   dateOfBirth: string,
-  minAge: number = 13
+  minAge: number = 13,
 ): string | undefined => {
   if (!dateOfBirth) {
     return "Date of birth is required";
@@ -88,6 +92,7 @@ export const validateOTP = (otp: string): string | undefined => {
   if (!otp || otp.length !== 6) {
     return "Please enter the 6-digit code";
   }
+
   return undefined;
 };
 
@@ -95,11 +100,12 @@ export const validateOTP = (otp: string): string | undefined => {
  * Validates privacy policy acceptance
  */
 export const validatePrivacyPolicy = (
-  accepted: boolean
+  accepted: boolean,
 ): string | undefined => {
   if (!accepted) {
     return "You must accept the privacy policy";
   }
+
   return undefined;
 };
 
@@ -107,11 +113,12 @@ export const validatePrivacyPolicy = (
  * Validates the entire login form
  */
 export const validateLoginForm = (
-  formData: LoginFormData
+  formData: LoginFormData,
 ): Partial<Record<keyof LoginFormData, string>> => {
   const errors: Partial<Record<keyof LoginFormData, string>> = {};
 
   const emailError = validateEmail(formData.email);
+
   if (emailError) errors.email = emailError;
 
   if (!formData.password) {
@@ -125,31 +132,37 @@ export const validateLoginForm = (
  * Validates the entire registration form
  */
 export const validateRegisterForm = (
-  formData: RegisterFormData
+  formData: RegisterFormData,
 ): Partial<Record<keyof RegisterFormData, string>> => {
   const errors: Partial<Record<keyof RegisterFormData, string>> = {};
 
   const usernameError = validateUsername(formData.username);
+
   if (usernameError) errors.username = usernameError;
 
   const emailError = validateEmail(formData.email);
+
   if (emailError) errors.email = emailError;
 
   const passwordError = validatePassword(formData.password);
+
   if (passwordError) errors.password = passwordError;
 
   const confirmPasswordError = validatePasswordMatch(
     formData.password,
-    formData.confirmPassword
+    formData.confirmPassword,
   );
+
   if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
 
   const dateOfBirthError = validateDateOfBirth(formData.dateOfBirth);
+
   if (dateOfBirthError) errors.dateOfBirth = dateOfBirthError;
 
   const privacyPolicyError = validatePrivacyPolicy(
-    formData.acceptPrivacyPolicy
+    formData.acceptPrivacyPolicy,
   );
+
   if (privacyPolicyError) errors.acceptPrivacyPolicy = privacyPolicyError;
 
   return errors;
@@ -159,20 +172,23 @@ export const validateRegisterForm = (
  * Validates the reset password form
  */
 export const validateResetPasswordForm = (
-  formData: ResetPasswordFormData
+  formData: ResetPasswordFormData,
 ): Partial<Record<keyof ResetPasswordFormData, string>> => {
   const errors: Partial<Record<keyof ResetPasswordFormData, string>> = {};
 
   const otpError = validateOTP(formData.otp);
+
   if (otpError) errors.otp = otpError;
 
   const passwordError = validatePassword(formData.newPassword);
+
   if (passwordError) errors.newPassword = passwordError;
 
   const confirmPasswordError = validatePasswordMatch(
     formData.newPassword,
-    formData.confirmPassword
+    formData.confirmPassword,
   );
+
   if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
 
   return errors;

@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import NextHead from "next/head";
 import { useRouter } from "next/router";
-import { addToast, Card, CardBody } from "@heroui/react";
+import { addToast, Card } from "@heroui/react";
 
 import { useLogin } from "@/service/hooks/useAuth";
 import { LoginFormData } from "@/types/auth";

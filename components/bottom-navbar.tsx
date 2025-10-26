@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-} from "@heroui/react";
+import { Button } from "@heroui/react";
 import {
   UserCircleIcon,
   ChatBubbleLeftRightIcon,
@@ -21,6 +14,10 @@ import {
   SparklesIcon as SparklesIconSolid,
   HomeIcon as HomeIconSolid,
 } from "@heroicons/react/24/solid";
+
+import { UploadModal } from "./upload-modal";
+
+import { UploadResult } from "@/service/upload";
 
 export const BottomNavbar = () => {
   const router = useRouter();
@@ -74,7 +71,7 @@ export const BottomNavbar = () => {
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-divider bg-background/80 backdrop-blur-lg backdrop-saturate-150">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-divider bg-background backdrop-blur-lg backdrop-saturate-150">
         <div className="mx-auto max-w-screen-xl px-4">
           <div className="flex items-center justify-around py-3 gap-2">
             {navItems.map((item) => {
@@ -107,56 +104,21 @@ export const BottomNavbar = () => {
       </nav>
 
       {/* Upload Modal */}
-      <Modal
-        backdrop="blur"
+      <UploadModal
+        authToken={
+          typeof window !== "undefined"
+            ? localStorage.getItem("authToken") || ""
+            : ""
+        }
         isOpen={showUploadModal}
-        size="md"
         onClose={() => setShowUploadModal(false)}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Upload Media
-              </ModalHeader>
-              <ModalBody>
-                <div className="flex flex-col gap-3">
-                  <Button
-                    className="h-auto border-2 border-dashed border-default-300 p-6 hover:border-primary hover:bg-primary/5"
-                    variant="bordered"
-                    onPress={() => {
-                      // TODO: Implement image upload
-                      onClose();
-                    }}
-                  >
-                    <span className="text-lg font-semibold">Upload Images</span>
-                  </Button>
-                  <Button
-                    className="h-auto border-2 border-dashed border-default-300 p-6 hover:border-primary hover:bg-primary/5"
-                    variant="bordered"
-                    onPress={() => {
-                      // TODO: Implement video upload
-                      onClose();
-                    }}
-                  >
-                    <span className="text-lg font-semibold">Upload Videos</span>
-                  </Button>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  fullWidth
-                  color="default"
-                  variant="flat"
-                  onPress={onClose}
-                >
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        onUploadComplete={(results: UploadResult[]) => {
+          // Handle upload completion
+          // eslint-disable-next-line no-console
+          console.log("Files uploaded:", results);
+          // You can add your own logic here, e.g., refresh the gallery, show notification, etc.
+        }}
+      />
     </>
   );
 };

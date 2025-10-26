@@ -33,8 +33,8 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (data: LoginDTO) => authApi.login(data),
     onSuccess: (data: any) => {
-      localStorage.setItem("token", JSON.stringify(data.data.token));
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem("user", data.data.user);
 
       // Redirect to dashboard
       router.push("/dashboard");

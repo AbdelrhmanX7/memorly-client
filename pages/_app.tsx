@@ -2,7 +2,7 @@ import type { AppProps } from "next/app";
 
 import { useEffect, useState } from "react";
 import { HeroUIProvider } from "@heroui/system";
-import { Spinner, ToastProvider } from "@heroui/react";
+import { cn, Spinner, ToastProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useRouter } from "next/router";
 import { useReadLocalStorage } from "usehooks-ts";
@@ -40,8 +40,9 @@ export default function App({ Component, pageProps }: AppProps) {
     async function getToken() {
       const tokenInfo = token || localStorageToken;
 
-      if (tokenInfo && !axios.defaults.headers.common["Authorization"]) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${tokenInfo}`;
+      if (tokenInfo) {
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${tokenInfo.replaceAll('"', "")}`;
       }
 
       if (tokenInfo) {
@@ -117,7 +118,13 @@ export default function App({ Component, pageProps }: AppProps) {
               <>
                 <Navbar />
                 <PageTransition>
-                  <main className="container mx-auto max-w-7xl px-6 h-full mb-[85px]">
+                  <main
+                    className={cn(
+                      "container mx-auto max-w-7xl px-6 h-full mb-[85px]",
+                      isUserLoggedIn &&
+                        "[&_.grid-background]:blur-[2px] [&_.grid-background]:animate-pulse",
+                    )}
+                  >
                     <Component {...pageProps} />
                   </main>
                 </PageTransition>

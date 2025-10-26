@@ -27,7 +27,7 @@ export interface RegisterFormData extends RegisterDTO {
   confirmPassword: string;
 }
 
-export interface LoginFormData extends LoginDTO { }
+export interface LoginFormData extends LoginDTO {}
 
 export interface VerifyEmailDTO {
   email: string;
